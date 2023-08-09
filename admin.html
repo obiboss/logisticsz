@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      p,
+      input {
+        display: inline-block;
+      }
+      p {
+        margin-right: 30px;
+      }
+      li {
+        list-style: none;
+      }
+    </style>
+    <title>Admin</title>
+  </head>
+  <body>
+    <form class="shipmentForm">
+      <div>
+        <label for="sender-name">Sender name</label>
+        <input type="text" name="Sender Name" />
+      </div>
+      <div>
+        <label for="phone-number">Senders Phone Number</label>
+        <input type="number" name="Phone Number" />
+      </div>
+      <div>
+        <label for="email-address">Senders Email Address</label>
+        <input type="email" name="Email Address" />
+      </div>
+
+      <div>
+        <label for="Receiver-name">Receiver Name</label>
+        <input type="text" name="Receiver Name" />
+      </div>
+      <div>
+        <label for="phone-number">Receivers Phone Number</label>
+        <input type="number" name="Receivers Phone Number" />
+      </div>
+      <div>
+        <label for="place-of-origin">Place of Origin</label>
+        <input type="text" name="Place of Origin" />
+      </div>
+
+      <div>
+        <label for="destination">Destination</label>
+        <input type="text" name="Destination" />
+      </div>
+
+      <div>
+        <label for="deliveryDate">Delivery date</label>
+        <input type="date" name="deliveryDate" id="deliveryDate" />
+      </div>
+
+      <div>
+        <label for="status">Status</label>
+      </div>
+
+      <div>
+        <input
+          type="radio"
+          name="status"
+          id="outForDelivery"
+          value="Out for Delivery"
+        /><label for="outForDelivery">Out for Delivery</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          name="status"
+          id="inTransit"
+          value="In Transit"
+        /><label for="inTransit">In Transit</label>
+      </div>
+      <div>
+        <input type="radio" name="status" id="enroute" value="Enroute" /><label
+          for="enroute"
+          >Enroute</label
+        >
+      </div>
+      <div>
+        <input
+          type="radio"
+          name="status"
+          id="delivered"
+          value="Delivered"
+        /><label for="delivered">Delivered</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          name="status"
+          id="cancelled"
+          value="Cancelled"
+        /><label for="cancelled">Cancelled</label>
+      </div>
+      <div>
+        <input type="radio" name="status" id="pending" value="Pending" /><label
+          for="pending"
+          >Pending</label
+        >
+      </div>
+      <div>
+        <input
+          type="radio"
+          name="status"
+          id="pickedUp"
+          value="Picked Up"
+        /><label for="pickedUp">Picked Up</label>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <script src="script.js"></script>
+  </body>
+</html>

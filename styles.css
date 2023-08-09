@@ -61,6 +61,11 @@ nav {
   transform: translate(-50%, -50%);
 }
 
+/* Show the shorter and witty paragraph on mobile */
+.header-container p.shorter-text {
+  display: none;
+}
+
 .header-container-inner {
   width: 50%;
 }
@@ -171,6 +176,13 @@ section {
   .container {
     width: 100%;
     padding: 0 10px;
+  }
+  .header-container p.original-text {
+    display: none;
+  }
+  /* Show the shorter and witty paragraph on mobile */
+  .header-container p.shorter-text {
+    display: block;
   }
 
   .sticker {

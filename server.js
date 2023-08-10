@@ -65,6 +65,24 @@ app.get("/getData", (req, res) => {
   );
 });
 
+// Update shipment status
+app.put("/updateStatus", (req, res) => {
+  const { uniqueId, newStatus } = req.body;
+
+  db.run(
+    "UPDATE shipments SET data = json_patch(data, ?) WHERE unique_id = ?",
+    [`{"status": "${newStatus}"}`, uniqueId],
+    (err) => {
+      if (err) {
+        console.error("Error updating status:", err);
+        res.status(500).json({ message: "Error updating status" });
+      } else {
+        res.status(200).json({ message: "Status updated successfully" });
+      }
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });

@@ -12,7 +12,23 @@
     </header>
     <div class="container">
       <h2>Tracked Delivery Information</h2>
-      <div id="trackedData"></div>
+    </form>
+
+    <form id="trackForm">
+      <div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter your tracking number"
+          id="trackingNumber"
+        />
+        <input type="submit" class="btn" value="Check ID" />
+      </div>
+    </form>
+
+    <!-- Display section for the selected shipment data -->
+    <div id="trackedData">
+      <!-- Populated data will be displayed here -->
     </div>
 
     <!-- ... Rest of your content ... -->

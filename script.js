@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ...formDataObject,
         }),
       });
-      console.log("Form Data:", JSON.stringify(formDataObject));
 
       if (response.ok) {
         const json = await response.json();
@@ -45,12 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const uniqueId = json.uniqueId;
         window.location.href = `confirm.html?id=${uniqueId}`;
+        console.log(uniqueId);
       }
     });
   }
 
   // Track Delivery Form
   const trackForm = document.getElementById("trackForm");
+  const selectedShipmentData = document.getElementById("selectedShipmentData");
 
   if (trackForm) {
     trackForm.addEventListener("submit", async (e) => {
@@ -79,6 +80,12 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("");
 
           trackedDataElement.innerHTML = dataMarkup;
+
+          if (selectedShipmentData) {
+            selectedShipmentData.innerHTML = dataMarkup; // Display the data in the selectedShipmentData element
+          } else {
+            // Handle the case where selectedShipmentData is not available
+          }
         }
       } else {
         console.error("Error fetching tracking data:", response.statusText);
@@ -86,14 +93,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Update Status Button
+  const updateStatusButton = document.getElementById("updateStatusButton");
+
+  if (updateStatusButton) {
+    updateStatusButton.addEventListener("click", async () => {
+      const uniqueIdToUpdate = document.getElementById("trackingNumber").value;
+      const newStatus = document.querySelector(
+        'input[name="newStatus"]:checked'
+      ).value;
+
+      // Send status update request to server
+      const updateResponse = await fetch("/updateStatus", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uniqueId: uniqueIdToUpdate,
+          newStatus: newStatus,
+        }),
+      });
+
+      if (updateResponse.ok) {
+        console.log("Status updated successfully");
+        // Handle success, update UI or show a success message
+      } else {
+        console.error("Error updating status:", updateResponse.statusText);
+        // Handle error, display an error message to the user
+      }
+    });
+  }
   const urlParams = new URLSearchParams(window.location.search);
   const uniqueId = urlParams.get("id");
+  const uniqueIdElement = document.getElementById("uniqueId");
 
-  // Check if we're on the confirmation page
-  if (window.location.pathname.includes("confirm.html")) {
-    const uniqueIdElement = document.getElementById("uniqueId");
-
-    if (uniqueIdElement && uniqueId) {
+  if (uniqueIdElement) {
+    // Check if uniqueIdElement is not null
+    if (uniqueId) {
       uniqueIdElement.textContent = uniqueId;
     } else {
       uniqueIdElement.textContent = "Unknown";

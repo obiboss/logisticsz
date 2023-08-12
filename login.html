@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/5344e81195.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        box-sizing: border-box;
+      }
+
+      .container {
+        width: 100%;
+        height: 100vh;
+        background-image: linear-gradient(
+            rgba(34, 34, 34, 0.6),
+            rgba(34, 34, 34, 0.6)
+          ),
+          url(log.webp);
+        background-size: cover;
+        color: #fff;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+      }
+
+      .form-box {
+        width: 90%;
+        max-width: 450px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 50px 60px 70px;
+        text-align: center;
+      }
+
+      .form-box h1 {
+        font-size: 30px;
+        margin-bottom: 60px;
+        color: #3c00a0;
+        position: relative;
+      }
+
+      .form-box h1::after {
+        content: "";
+        width: 30px;
+        height: 4px;
+        border-radius: 5px;
+        background: #3c00a0;
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .input-field {
+        background: #eaeaea;
+        margin: 15px 0;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        max-height: 65px;
+        transition: max-height 0.5s;
+        overflow: hidden;
+      }
+
+      input {
+        width: 100%;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        padding: 18px 15px;
+      }
+
+      i {
+        color: #001f8d;
+      }
+
+      .input-field i {
+        margin-left: 15px;
+        color: #999;
+      }
+
+      form p {
+        text-align: left;
+        font-size: 13px;
+        color: #3c00a0;
+      }
+      form p a:link {
+        text-decoration: none;
+        color: #3c00a0;
+        font-size: 13px;
+      }
+
+      .btn-field {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .btn-field button {
+        flex-basis: 48%;
+        background: #3c00a0;
+        color: #fff;
+        height: 40px;
+        border-radius: 10px;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+        transition: background 1s;
+      }
+      .input-group {
+        height: 280px;
+      }
+      .btn-field button.disabled {
+        background: #eaeaea;
+        color: #555;
+      }
+      footer a:link {
+        display: inline-block;
+      }
+    </style>
+    <title>login</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-box">
+        <h1 id="title">sign up</h1>
+        <form>
+          <div class="input-group">
+            <div class="input-field" id="nameField">
+              <i class="fa-solid fa-user"></i>
+
+              <input type="text" placeholder="Name" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-envelope"></i>
+
+              <input type="email" id="email" placeholder="Email" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-lock"></i>
+
+              <input type="password" id="password" placeholder="Password" />
+            </div>
+            <p>Lost password <a href="#">Click Here</a></p>
+          </div>
+          <div class="btn-field">
+            <button type="button" id="signup">Sign Up</button>
+            <button type="button" id="signin" class="disabled">Sign In</button>
+          </div>
+          <div id="error-message"></div>
+        </form>
+      </div>
+    </div>
+    <footer>
+      <p><a href="admin.html">🔓</a></p>
+    </footer>
+
+    <script>
+      let signupBtn = document.getElementById("signup");
+      let signinBtn = document.getElementById("signin");
+      let nameField = document.getElementById("nameField");
+      let title = document.getElementById("title");
+
+      signinBtn.onclick = function () {
+        nameField.style.maxHeight = "0";
+        title.innerHTML = "sign in";
+        signupBtn.classList.add("disabled");
+        signinBtn.classList.remove("disabled");
+      };
+      signupBtn.onclick = function () {
+        nameField.style.maxHeight = "60px";
+        title.innerHTML = "sign up";
+        signupBtn.classList.remove("disabled");
+        signinBtn.classList.add("disabled");
+      };
+
+      // Function to handle user login
+      async function loginUser() {
+        const username = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("Login successful");
+          errorMessage.textContent = "Login successful";
+          errorMessage.style.color = "green";
+          window.location.href = "/admin.html"; // Redirect to admin.html on successful login
+        } else {
+          console.error("Login error:", data.error);
+          errorMessage.textContent = "Error: " + data.error;
+          errorMessage.style.color = "red";
+        }
+      }
+
+      const loginButton = document.getElementById("signin");
+      loginButton.addEventListener("click", loginUser);
+    </script>
+  </body>
+</html>

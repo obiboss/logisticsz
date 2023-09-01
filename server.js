@@ -23,7 +23,7 @@ db.serialize(() => {
   )`);
 });
 
-app.use(cors({ origin: "http://127.0.0.1:5501" }));
+app.use(cors());
 
 app.post("/storeData", (req, res) => {
   console.log("Received request to store data:", req.body);

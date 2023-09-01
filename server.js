@@ -3,9 +3,10 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path"); // import the path module
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,9 +23,11 @@ db.serialize(() => {
   )`);
 });
 
+app.use(cors({ origin: "http://127.0.0.1:5501" }));
+
 app.post("/storeData", (req, res) => {
   console.log("Received request to store data:", req.body);
-  const { ...formData } = req.body;
+  const formData = req.body;
   console.log("Form Data:", req.body);
 
   db.run(
@@ -46,18 +49,22 @@ app.post("/storeData", (req, res) => {
 
 app.get("/getData", (req, res) => {
   const uniqueId = req.query.uniqueId;
+  // console.log("Received GET request for uniqueId:", uniqueId);
 
   db.get(
     "SELECT * FROM shipments WHERE unique_id = ?",
     [uniqueId],
     (err, row) => {
+      // console.log("Query executed."); // Log when the query starts
       if (err) {
         console.error("Error fetching data:", err);
         res.status(500).json({ message: "Error fetching data" });
       } else if (row) {
         const parsedData = JSON.parse(row.data);
+        // console.log("Data fetched from database:", parsedData);
         res.status(200).json(parsedData);
       } else {
+        // console.log("Data not found in the database.");
         res.status(404).json({ message: "Data not found" });
       }
     }

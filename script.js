@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const randomId = generateRandomId(7); // Generating unique ID here
 
       // Send data to server for storage
-      const response = await fetch("/storeData", {
+      const response = await fetch("http://localhost:3000/storeData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const trackingNumber = document.getElementById("trackingNumber").value;
 
       // Send tracking number to server for fetching data
-      const response = await fetch(`/getData?uniqueId=${trackingNumber}`);
+      const url = `http://localhost:3000/getData?uniqueId=${trackingNumber}`;
+      console.log("Constructed URL:", url); // Log the URL
+      const response = await fetch(url);
+      // const response = await fetch(`/getData?uniqueId=${trackingNumber}`);
       if (response.ok) {
         const parsedData = await response.json();
         console.log("Fetched Tracking Data:", parsedData);

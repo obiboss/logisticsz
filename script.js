@@ -106,6 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
         'input[name="newStatus"]:checked'
       ).value;
 
+      console.log("Updating status with uniqueId:", uniqueIdToUpdate);
+      console.log("New status:", newStatus);
+
       // Send status update request to server
       const updateResponse = await fetch("/updateStatus", {
         method: "PUT",

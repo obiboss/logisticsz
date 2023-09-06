@@ -1,9 +1,11 @@
+"use strict";
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path"); // import the path module
 const bcrypt = require("bcrypt");
 const cors = require("cors");
+const db = require("./shipment.js"); // Create or open the SQLite database file
 
 const app = express();
 const port = 3000;
@@ -12,16 +14,14 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const db = new sqlite3.Database("shipment.db"); // Create or open the SQLite database file
-
-db.serialize(() => {
-  // Create a shipments table if it doesn't exist
-  db.run(`CREATE TABLE IF NOT EXISTS shipments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    unique_id TEXT NOT NULL,
-    data TEXT NOT NULL
-  )`);
-});
+// db.serialize(() => {
+//   // Create a shipments table if it doesn't exist
+//   db.run(`CREATE TABLE IF NOT EXISTS shipments (
+//     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//     unique_id TEXT NOT NULL,
+//     data TEXT NOT NULL
+//   )`);
+// });
 
 app.use(cors());
 
@@ -30,63 +30,73 @@ app.post("/storeData", (req, res) => {
   const formData = req.body;
   console.log("Form Data:", req.body);
 
-  db.run(
-    "INSERT INTO shipments (unique_id, data) VALUES (?, ?)",
-    [formData.uniqueId, JSON.stringify(formData)],
-    (err) => {
-      if (err) {
-        console.error("Error storing data:", err);
-        res.status(500).json({ message: "Error storing data" });
-      } else {
-        res.status(200).json({
-          message: "Data stored successfully",
-          uniqueId: formData.uniqueId,
-        });
-      }
-    }
-  );
+  // db.run(
+  //   "INSERT INTO shipments (unique_id, data) VALUES (?, ?)",
+  //   [formData.uniqueId, JSON.stringify(formData)],
+  //   (err) => {
+  //     if (err) {
+  //       console.error("Error storing data:", err);
+  //       res.status(500).json({ message: "Error storing data" });
+  //     } else {
+  //       res.status(200).json({
+  //         message: "Data stored successfully",
+  //         uniqueId: formData.uniqueId,
+  //       });
+  //     }
+  //   }
+  // );
 });
 
 app.get("/getData", (req, res) => {
   const uniqueId = req.query.uniqueId;
   // console.log("Received GET request for uniqueId:", uniqueId);
 
-  db.get(
-    "SELECT * FROM shipments WHERE unique_id = ?",
-    [uniqueId],
-    (err, row) => {
-      // console.log("Query executed."); // Log when the query starts
-      if (err) {
-        console.error("Error fetching data:", err);
-        res.status(500).json({ message: "Error fetching data" });
-      } else if (row) {
-        const parsedData = JSON.parse(row.data);
-        // console.log("Data fetched from database:", parsedData);
-        res.status(200).json(parsedData);
-      } else {
-        // console.log("Data not found in the database.");
-        res.status(404).json({ message: "Data not found" });
-      }
-    }
-  );
+  // db.get(
+  //   "SELECT * FROM shipments WHERE unique_id = ?",
+  //   [uniqueId],
+  //   (err, row) => {
+  //     // console.log("Query executed."); // Log when the query starts
+  //     if (err) {
+  //       console.error("Error fetching data:", err);
+  //       res.status(500).json({ message: "Error fetching data" });
+  //     } else if (row) {
+  //       const parsedData = JSON.parse(row.data);
+  //       // console.log("Data fetched from database:", parsedData);
+  //       res.status(200).json(parsedData);
+  //     } else {
+  //       // console.log("Data not found in the database.");
+  //       res.status(404).json({ message: "Data not found" });
+  //     }
+  //   }
+  // );
 });
 
-// Update shipment status
 app.put("/updateStatus", (req, res) => {
   const { uniqueId, newStatus } = req.body;
+  // console.log("Received PUT request at /updateStatus");
+  console.log("Request Body:", req.body);
 
-  db.run(
-    "UPDATE shipments SET data = json_patch(data, ?) WHERE unique_id = ?",
-    [`{"status": "${newStatus}"}`, uniqueId],
-    (err) => {
-      if (err) {
-        console.error("Error updating status:", err);
-        res.status(500).json({ message: "Error updating status" });
-      } else {
-        res.status(200).json({ message: "Status updated successfully" });
+  updateStatus(req, res);
+
+  try {
+    // Update shipment status in the database
+    res.header("Allow", "PUT");
+    db.run(
+      "UPDATE shipments SET data = json_patch(data, ?) WHERE unique_id = ?",
+      [`{"status": "${newStatus}"}`, uniqueId],
+      (err) => {
+        if (err) {
+          console.error("Error updating status:", err);
+          res.status(500).json({ message: "Error updating status" });
+        } else {
+          res.status(200).json({ message: "Status updated successfully" });
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Error updating status" });
+  }
 });
 
 // Serve static files from the root directory
